@@ -17,6 +17,9 @@ COPY . .
 # Disable telemetry during build time
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Ensure public directory exists (this project stores assets in app/ and assets/)
+RUN mkdir -p public
+
 RUN npm run build
 
 # Stage 3: Runner
