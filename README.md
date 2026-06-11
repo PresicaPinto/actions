@@ -1,11 +1,11 @@
 <div align="center">
   <h1><img src="https://gocart-gs.vercel.app/favicon.ico" width="20" height="20" alt="GoCart Favicon">
-   GoCart</h1>
+   GoCart - Production DevOps Manual & Guide</h1>
   <p>
-    An open-source multi-vendor e-commerce platform built with Next.js and Tailwind CSS.
+    An open-source multi-vendor e-commerce platform built with Next.js, Tailwind CSS, Redux Toolkit, and Prisma.
   </p>
   <p>
-    <a href="https://github.com/GreatStackDev/goCart/blob/main/LICENSE.md"><img src="https://img.shields.io/github/license/GreatStackDev/goCart?style=for-the-badge" alt="License"></a>
+    <a href="./LICENSE.md"><img src="https://img.shields.io/github/license/GreatStackDev/goCart?style=for-the-badge" alt="License"></a>
     <a href="https://github.com/GreatStackDev/goCart/pulls"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome"></a>
     <a href="https://github.com/GreatStackDev/goCart/issues"><img src="https://img.shields.io/github/issues/GreatStackDev/goCart?style=for-the-badge" alt="GitHub issues"></a>
   </p>
@@ -16,70 +16,366 @@
 ## 📖 Table of Contents
 
 - [✨ Features](#-features)
-- [🛠️ Tech Stack](#-tech-stack)
-- [🚀 Getting Started](#-getting-started)
-- [🤝 Contributing](#-contributing)
-- [📜 License](#-license)
+- [🛠️ Technology Stack](#%EF%B8%8F-technology-stack)
+- [📁 Project Structure](#-project-structure)
+- [🚀 Installation & Local Setup](#-installation--local-setup)
+- [🔑 Environment Variables](#-environment-variables)
+- [🐳 Docker Setup & Command Handbook](#-docker-setup--command-handbook)
+- [🤖 GitHub Actions Workflows](#-github-actions-workflows)
+- [🔐 GitHub Secrets Setup Guide](#-github-secrets-setup-guide)
+- [🔍 Running Tests & Linting](#-running-tests--linting)
+- [🎛️ Deployment Instructions](#%EF%B8%8F-deployment-instructions)
+- [⚠️ Troubleshooting Guide](#%EF%B8%8F-troubleshooting-guide)
+- [🤝 Contributing Guidelines](#-contributing-guidelines)
+- [📘 DevOps & CI/CD Comprehensive Guide](#-devops--cicd-comprehensive-guide)
+  - [How GitHub Actions Works Internally](#how-github-actions-works-internally)
+  - [Workflow Triggers on Push to Main/Master](#workflow-triggers-on-push-to-mainmaster)
+  - [How Runners Execute Jobs](#how-runners-execute-jobs)
+  - [How Docker Integrates with GitHub Actions](#how-docker-integrates-with-github-actions)
+  - [CI/CD Pipelines in Real-World Industry Projects](#cicd-pipelines-in-real-world-industry-projects)
+  - [How to Troubleshoot Failed Workflows and Docker Builds](#how-to-troubleshoot-failed-workflows-and-docker-builds)
 
 ---
 
-## Features
+## ✨ Features
 
-- **Multi-Vendor Architecture:** Allows multiple vendors to register, manage their own products, and sell on a single platform.
-- **Customer-Facing Storefront:** A beautiful and responsive user interface for customers to browse and purchase products.
-- **Vendor Dashboards:** Dedicated dashboards for vendors to manage products, view sales analytics, and track orders.
-- **Admin Panel:** A comprehensive dashboard for platform administrators to oversee vendors, products, and commissions.
+- **Multi-Vendor Architecture:** Allows multiple vendors to register, manage products, and sell on a single platform.
+- **Customer-Facing Storefront:** Responsive user interface for customers to browse and purchase products.
+- **Vendor Dashboards:** Dedicated analytics and product management tools for vendors.
+- **Admin Panel:** Platform administration panel to manage vendors, approve stores, and review orders.
 
-## 🛠️ Tech Stack <a name="-tech-stack"></a>
+---
 
-- **Framework:** Next.js
-- **Styling:** Tailwind CSS
-- **UI Components:** Lucide React for icons
-- **State Management:** Redux Toolkit
+## 🛠️ Technology Stack
 
-## 🚀 Getting Started <a name="-getting-started"></a>
+- **Framework:** Next.js 15 (React 19, App Router)
+- **Styling:** Tailwind CSS v4 with PostCSS
+- **State Management:** Redux Toolkit (`@reduxjs/toolkit` and `react-redux`)
+- **Database & ORM:** PostgreSQL and Prisma ORM
+- **Routing & Rendering:** Next.js Standalone Node Server
 
-First, install the dependencies. We recommend using `npm` for this project.
+---
 
-```bash
-npm install
+## 📁 Project Structure
+
+```text
+gocart/
+├── .github/workflows/          # GitHub Actions CI/CD workflows
+│   ├── ci-build.yml            # Compilation verification
+│   ├── lint.yml                # ESLint code quality checks
+│   ├── test.yml                # Unit testing with Vitest
+│   ├── security.yml            # Dependency vulnerability scanning
+│   ├── docker-build.yml        # Dockerfile validation on PRs
+│   ├── docker-push.yml         # Production image push to Docker Hub
+│   ├── release.yml             # Automated GitHub release on tags
+│   └── deploy.yml              # Simulated production deployment via SSH
+├── app/                        # Next.js App Router folders
+├── assets/                     # Application assets and dummy data
+├── components/                 # Shared React components
+├── lib/                        # Redux store, slices, and utility functions
+│   └── store.test.js           # Vitest unit test for store validation
+├── prisma/                     # Database schemas and configurations
+│   └── schema.prisma           # Prisma PostgreSQL schema
+├── Dockerfile                  # Multi-stage production Docker configuration
+├── .dockerignore               # Files ignored by Docker build context
+├── docker-compose.yml          # Local Postgres & Web stack orchestration
+├── package.json                # Project dependencies and script scripts
+└── README.md                   # Complete DevOps manual & project instructions
 ```
 
-Then, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🚀 Installation & Local Setup
+
+### Prerequisites
+- **Node.js**: `18.17.0` or higher (LTS `20+` recommended)
+- **Database**: PostgreSQL database (if running database queries)
+
+### Setup Steps
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Start the local development server:**
+   ```bash
+   npm run dev
+   ```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+---
+
+## 🔑 Environment Variables
+
+Create a `.env` file in the root of the project:
+
+```env
+# Application Settings
+NEXT_PUBLIC_CURRENCY_SYMBOL = '$'
+PORT = 3000
+
+# Database Connections (Optional/Prisma)
+DATABASE_URL = "postgresql://gocart_user:gocart_password@localhost:5432/gocart_db?schema=public"
+DIRECT_URL = "postgresql://gocart_user:gocart_password@localhost:5432/gocart_db?schema=public"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/(public)/page.js`. The page auto-updates as you edit the file.
+## 🐳 Docker Setup & Command Handbook
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Outfit](https://vercel.com/font), a new font family for Vercel.
+Our production Docker build is structured as a **multi-stage build** defined in the [Dockerfile](file:///d:/github/gocart/Dockerfile). This optimizes speed, limits dependencies, and reduces the output image size down to **~150MB** by using Next.js standalone features.
+
+### Command Reference
+
+#### 1. Build the Docker Image
+Builds the Next.js production image locally:
+```bash
+docker build -t gocart-app:latest .
+```
+
+#### 2. Run Container
+Runs the image on port 3000:
+```bash
+docker run -d -p 3000:3000 --name gocart-web gocart-app:latest
+```
+
+#### 3. Stop Container
+```bash
+docker stop gocart-web
+```
+
+#### 4. Restart Container
+```bash
+docker restart gocart-web
+```
+
+#### 5. Remove Container
+```bash
+docker rm gocart-web
+```
+
+#### 6. Remove Image
+```bash
+docker rmi gocart-app:latest
+```
+
+#### 7. View Logs
+View active console output from the web container:
+```bash
+docker logs -f gocart-web
+```
+
+#### 8. Execute Commands Inside Container
+Open a shell inside the running container to debug:
+```bash
+docker exec -it gocart-web sh
+```
+
+#### 9. Docker Volume Management
+Create, inspect, and remove persistent volumes (used by PostgreSQL):
+```bash
+docker volume create postgres_data
+docker volume ls
+docker volume inspect postgres_data
+docker volume rm postgres_data
+```
+
+#### 10. Docker Network Management
+Create and inspect bridges networks:
+```bash
+docker network create gocart-net
+docker network ls
+docker network inspect gocart-net
+```
+
+#### 11. Run Multi-Service Compose Stack (Web + DB)
+Starts the entire stack in the background:
+```bash
+docker compose up -d
+```
+Stops and tears down all services, networks, and volumes:
+```bash
+docker compose down -v
+```
+
+#### 12. Push Image to Docker Hub
+Authenticate and upload the image:
+```bash
+docker login -u <username>
+docker tag gocart-app:latest <username>/gocart:latest
+docker push <username>/gocart:latest
+```
+
+#### 13. Pull Image from Docker Hub
+```bash
+docker pull <username>/gocart:latest
+```
 
 ---
 
-## 🤝 Contributing <a name="-contributing"></a>
+## 🤖 GitHub Actions Workflows
 
-We welcome contributions! Please see our [CONTRIBUTING.md](./CONTRIBUTING.md) for more details on how to get started.
+We have configured **8 distinct workflows** under [.github/workflows/](file:///d:/github/gocart/.github/workflows/) to automate our CI/CD processes.
+
+### 1. CI Build Workflow (`ci-build.yml`)
+- **Triggers**: Pushes and PRs to `main` and `master`.
+- **Purpose**: Verifies that the Next.js project compiles without TypeScript or build issues.
+- **Key Commands**: `npm ci`, `npm run build`.
+
+### 2. Code Quality / Lint Workflow (`lint.yml`)
+- **Triggers**: Pushes and PRs to `main` and `master`.
+- **Purpose**: Checks code styling and ESLint formatting errors.
+- **Key Commands**: `npm run lint`.
+
+### 3. Unit Test Workflow (`test.yml`)
+- **Triggers**: Pushes and PRs to `main` and `master`.
+- **Purpose**: Runs automated unit tests via Vitest.
+- **Key Commands**: `npm run test`.
+
+### 4. Security Scan Workflow (`security.yml`)
+- **Triggers**: Pushes and PRs to `main` and `master`.
+- **Purpose**: Audits external package dependencies for known vulnerabilities.
+- **Key Commands**: `npm audit --audit-level=high`.
+
+### 5. Docker Build Workflow (`docker-build.yml`)
+- **Triggers**: PRs targeting `main` and `master`.
+- **Purpose**: Validates that the multi-stage Dockerfile successfully builds without committing the image to Docker Hub.
+- **Key Actions**: `docker/build-push-action@v5` (with `push: false`).
+
+### 6. Docker Hub Push Workflow (`docker-push.yml`)
+- **Triggers**: Direct pushes/merges to `main` and `master`.
+- **Purpose**: Builds the production Docker image, tags it with both `:latest` and the commit SHA, and pushes it to Docker Hub.
+- **Secrets Used**: `DOCKER_USERNAME`, `DOCKER_PASSWORD`.
+
+### 7. Release Workflow (`release.yml`) (Bonus)
+- **Triggers**: Tag push of format `v*` (e.g. `v1.0.0`).
+- **Purpose**: Automatically generates a GitHub Release draft and compiles release notes.
+- **Key Actions**: `softprops/action-gh-release@v2`.
+
+### 8. Deployment Workflow (`deploy.yml`) (Bonus)
+- **Triggers**: Direct pushes to `main` and `master`. Also manually triggerable (`workflow_dispatch`).
+- **Purpose**: Connects securely via SSH to a staging or production server, pulls the newly uploaded Docker image, and recreates the service stack using `docker compose`.
+- **Secrets Used**: `SSH_PRIVATE_KEY`, `SSH_USER`, `SSH_HOST`, `DOCKER_USERNAME`, `DOCKER_PASSWORD`.
 
 ---
 
-## 📜 License <a name="-license"></a>
+## 🔐 GitHub Secrets Setup Guide
 
-This project is licensed under the MIT License. See the [LICENSE.md](./LICENSE.md) file for details.
+To enable Docker Hub push and automated deployments, configure the following secrets in your GitHub repository (**Settings > Secrets and variables > Actions > New repository secret**):
 
-## Learn More
+| Secret Name | Description | Example |
+| :--- | :--- | :--- |
+| `DOCKER_USERNAME` | Your Docker Hub Username | `myusername` |
+| `DOCKER_PASSWORD` | Your Docker Hub Personal Access Token (PAT) | `dckr_pat_xxxx` |
+| `SSH_PRIVATE_KEY` | Private SSH key of the production VPS / server | `-----BEGIN OPENSSH PRIVATE KEY-----...` |
+| `SSH_USER` | SSH Username for server access | `ubuntu` |
+| `SSH_HOST` | IPv4 address or domain of the deployment server | `192.168.1.100` |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔍 Running Tests & Linting
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Unit Testing
+We use **Vitest** for running unit tests:
+```bash
+# Run tests once (for CI pipeline)
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+### Linting
+To check code format and ESLint rules:
+```bash
+npm run lint
+```
+
+---
+
+## 🎛️ Deployment Instructions
+
+Our system leverages a GitOps-based push-to-deploy strategy:
+1. Merge your code changes into the `main` or `master` branch.
+2. The GitHub Action CI runners will build, lint, and run tests.
+3. Once tests pass, the Docker Push action builds and tags the production container, pushing it to Docker Hub.
+4. The deployment workflow triggers, connecting to the target server via SSH.
+5. The server runs `docker compose pull` to grab the latest build, and restarts the containers with zero downtime.
+
+---
+
+## ⚠️ Troubleshooting Guide
+
+### Docker Build Failures
+* **Error**: `Prisma Client could not find its engine...`
+  * **Solution**: Ensure that `npx prisma generate` is executed during the builder phase in the Dockerfile if your code imports the Prisma Client.
+* **Error**: `JavaScript heap out of memory` during Next.js builds.
+  * **Solution**: Next.js builds can be memory-intensive. Increase memory allocations in the Dockerfile using `ENV NODE_OPTIONS="--max-old-space-size=4096"`.
+* **Error**: Compose failing with `port already in use`.
+  * **Solution**: A service is running on port 3000 or 5432 locally. Terminate it using `kill -9 $(lsof -t -i:3000)` or change host port mapping in `docker-compose.yml` to `"3001:3000"`.
+
+### GitHub Actions Failures
+* **Error**: `Process completed with exit code 1` on Docker Push step.
+  * **Solution**: Check if your `DOCKER_USERNAME` or `DOCKER_PASSWORD` is expired or incorrect.
+* **Error**: SSH Connection Timeout.
+  * **Solution**: Ensure the server firewall permits port 22 access from GitHub IP addresses or whitelist GitHub Actions CIDR blocks, or verify `SSH_HOST` is reachable.
+
+---
+
+## 🤝 Contributing Guidelines
+
+1. Fork the repository and create your feature branch: `git checkout -b feature/my-cool-feature`.
+2. Commit your changes: `git commit -m "feat: add super feature"`.
+3. Verify formatting and unit tests: `npm run lint` and `npm run test`.
+4. Push to the branch: `git push origin feature/my-cool-feature`.
+5. Open a Pull Request targeting `master` or `main`.
+
+---
+
+## 📘 DevOps & CI/CD Comprehensive Guide
+
+### How GitHub Actions Works Internally
+
+GitHub Actions is an event-driven automation platform that runs on standard virtualized hardware (or self-hosted machines). 
+* **Events**: Any activity in your repository (like a `push`, `pull_request`, `issue creation`, or `release`) creates a payload containing git metadata.
+* **Workflows**: When an event occurs, GitHub searches the `.github/workflows/` directory for YAML configurations that have matching `on:` conditions.
+* **Jobs & Steps**: A workflow is made of one or more **Jobs** that execute in parallel by default. Each job runs inside a freshly provisioned Virtual Machine (runner). Jobs contain **Steps** which run sequentially.
+
+### Workflow Triggers on Push to Main/Master
+
+When you configure `on: push: branches: [ main, master ]`, the GitHub trigger system listens to Git hooks pushed to GitHub's remote repositories.
+1. The developer pushes commits using `git push origin main`.
+2. GitHub's webhook dispatcher intercepts the push hook, parses the branch name, and matches it with the workflows directory.
+3. If matches are found, GitHub creates a **Workflow Run**, schedules jobs, and queues them for execution on the orchestrator.
+
+### How Runners Execute Jobs
+
+GitHub hosts runners on Windows, Ubuntu, and macOS environments. When a job is queued:
+1. GitHub provisions a secure, ephemeral Virtual Machine (VM) running in Microsoft Azure.
+2. The VM starts and downloads an agent application called the **GitHub Actions Runner**.
+3. The runner agent connects back to GitHub's orchestrator over HTTPS, claiming the queued job.
+4. The runner executes steps: checking out code via git, installing compilers/Node runtimes, running shell scripts, and executing pre-packaged node scripts (called "Actions" from the GitHub Marketplace).
+5. Upon job completion or failure, logs and artifacts are uploaded, and the VM is **destroyed** to prevent credentials and data leaks.
+
+### How Docker Integrates with GitHub Actions
+
+Docker integration is fundamental to modern CI/CD:
+* **Consistent Environments**: Instead of installing dependencies directly on the runner VM, we can build a Docker image. The Docker image acts as a single packaging format containing the runtime, configuration, and app code.
+* **Service Containers**: GitHub Actions allows running sidecar containers during a job (e.g. spinning up a Redis or Postgres database container alongside unit tests).
+* **Docker Buildx & Actions**: Official Docker Actions (`docker/setup-buildx-action`, `docker/login-action`, `docker/build-push-action`) initialize Docker Engine's BuildKit on the runner. This handles concurrent layer caching, multi-platform builds (x86/ARM), and direct transfers to registries like Docker Hub or GitHub Packages.
+
+### CI/CD Pipelines in Real-World Industry Projects
+
+In enterprise environments, pipelines are structured in stages:
+1. **Lint / Commit Message Checks**: Validates formatting and ensures commits follow standards.
+2. **Static Application Security Testing (SAST)**: Analyzes source code for secret leaks and vulnerabilities.
+3. **Unit & Integration Testing**: Tests features in isolation.
+4. **Artifact Compilation**: Docker images are built, tagged with semantic versioning/commits, and pushed to a Secure Private Registry.
+5. **Deployment Gate**: Manual approvals (via environment protection rules) ensure developers sign off on production releases.
+6. **CD Execution**: Continuous Deployment tools (like ArgoCD or Kubernetes operators) pull the image and perform rolling updates with health probes.
+
+### How to Troubleshoot Failed Workflows and Docker Builds
+
+1. **Read Build Logs**: Expand failing steps in GitHub Actions. Look for compiler outputs, syntax errors, or dependency conflicts.
+2. **Debug Locally**: Always attempt to run the command locally first (e.g. `npm run build` or `docker build .`) to isolate if the problem is in the code or the runner configuration.
+3. **Check Runner Resources**: Large compiles can hit CPU or memory limits on free runners (2 vCPUs and 7GB of RAM). Optimizing builds (like Next.js standalone outputs) is vital.
+4. **Inspect Layers**: If a Docker build fails, check which step (layer) it failed on. Check file paths, environment variables, and ensure cache mounts are configured.
