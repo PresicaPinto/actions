@@ -321,7 +321,7 @@ Our system leverages a GitOps-based push-to-deploy strategy:
 
 ---
 
-## 🤝 Contributing Guidelines
+## 🤝 Contributing Guidelines 
 
 1. Fork the repository and create your feature branch: `git checkout -b feature/my-cool-feature`.
 2. Commit your changes: `git commit -m "feat: add super feature"`.
